@@ -29,7 +29,7 @@ saveBtn.addEventListener("click",function(){
         return;
     }
     while(activeList.firstChild){
-        SavedList.appendChild(activeList.firstChild);
+        saveList.appendChild(activeList.firstChild);
     }
 
 });

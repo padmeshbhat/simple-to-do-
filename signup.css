@@ -1,0 +1,9 @@
+@import url('login.css');
+
+.form-group {
+    margin-bottom: 0.5rem;
+}
+
+#signupForm {
+    gap: 0.8rem;
+}
