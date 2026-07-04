@@ -5,8 +5,7 @@ const activeList=document.getElementById("active-list");
 const saveBtn=document.getElementById("save-button");
 const saveList=document.getElementById("saved-list");
 
-console.log("2. The Add Button is:", addButton);
-console.log("3. Button was clicked!");
+
 
 addButton.addEventListener("click", function() {
    const taskText=taskInput.value;
@@ -18,8 +17,19 @@ addButton.addEventListener("click", function() {
 
     const newListItem=document.createElement("li");
     newListItem.textContent=taskText;
+   
+
+    const dltbuttn=document.createElement("button");
+    dltbuttn.textContent="Delete";
+    dltbuttn.className="dlt-button";
+
+    dltbuttn.addEventListener('click',function(){
+        newListItem.remove();
+    });
+    newListItem.appendChild(dltbuttn);
     activeList.appendChild(newListItem);
     taskInput.value="";
+
    
 
 });
@@ -28,8 +38,14 @@ saveBtn.addEventListener("click",function(){
         alert("no tasks to save");
         return;
     }
+
+    const newcrd=document.createElement('div');
+    newcrd.className="saved-card";
+
     while(activeList.firstChild){
         saveList.appendChild(activeList.firstChild);
     }
+
+    saveList.appendChild(newcrd);
 
 });
