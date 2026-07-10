@@ -4,6 +4,7 @@ const addButton =document.getElementById("add-button");
 const activeList=document.getElementById("active-list");
 const saveBtn=document.getElementById("save-button");
 const saveList=document.getElementById("saved-list");
+let listCounter=1;
 
 
 
@@ -41,6 +42,25 @@ saveBtn.addEventListener("click",function(){
 
     const newcrd=document.createElement('div');
     newcrd.className="saved-card";
+    const taskarr=[];
+    for(i=0;i<activeList.children.length;i++){
+        taskarr.push(activeList.children[i].firstChild.textContent);
+    }
+    listCounter++;
+    const listData={
+        
+        title:"saved list"+listCounter,
+        tasks:taskarr
+    };
+    fetch("http://localhost:3000/api/lists", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(listData)
+})
+    .then(response => response.json())
+    .then(data => console.log("Success from Backend:", data));
 
     while(activeList.firstChild){
         saveList.appendChild(activeList.firstChild);
