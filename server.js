@@ -30,15 +30,31 @@ app.use(express.json());
 
 // 2. GET ROUTE (Read): Sends all saved lists to the frontend
 app.get("/api/lists", function(req, res) {
-    res.json(savedLists);
+    const sqlquery= "select * from lists";
+    db.query(sqlquery,function(err,results){
+        if(err){
+            console.error("Database error",err);
+            return res.status(500).json({error:"failed to fetch from database"});
+
+        }
+        res.json(results);
+    });
 });
 
 // 3. POST ROUTE (Create): Receives a new list and saves it
 app.post("/api/lists", function(req, res) {
     const newList = req.body; 
-    savedLists.push(newList); 
-    
-    res.status(201).json({ message: "List saved successfully!", currentLists: savedLists });
+    const sqlquerry="insert into lists (title,tasks) VALUES (?,?)";
+    db.query(sqlquerry, [newList.title, JSON.stringify(newList.tasks)], function(err, result) {
+        if (err) {
+            console.error("Database error: ", err);
+            // Send a 500 (Internal Server Error) if it fails
+            return res.status(500).json({ error: "Failed to save to database" }); 
+        }
+        
+        // 3. Send the success receipt back to the frontend
+        res.status(201).json({ message: "List saved permanently to MySQL!" });
+    });
 });
 
 // 4. Turn the server on
