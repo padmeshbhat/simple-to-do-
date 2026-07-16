@@ -69,3 +69,42 @@ saveBtn.addEventListener("click",function(){
     saveList.appendChild(newcrd);
 
 });
+
+function loadSavedLists() {
+    
+    fetch("http://localhost:3000/api/lists")
+        .then(response => response.json())
+        .then(data => {
+            saveList.innerHTML = "";
+
+            
+            for (let i = 0; i < data.length; i++) {
+                const currentList = data[i];
+
+                
+                const newCard = document.createElement("div");
+                newCard.className = "saved-card"; 
+                
+            
+                newCard.textContent = currentList.title; 
+
+              
+                for (let j = 0; j < currentList.tasks.length; j++) {
+                    const taskItem = document.createElement("li");
+                    taskItem.textContent = currentList.tasks[j];
+                    newCard.appendChild(taskItem);
+                }
+
+               
+                saveList.appendChild(newCard);
+            }
+           
+            console.log("Data loaded from MySQL:", data);
+        })
+        .catch(error => {
+            console.error("Failed to fetch data:", error);
+        });
+}
+
+
+loadSavedLists();
