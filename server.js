@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const PORT = 3000;
 const cors=require("cors");
 app.use(cors());
@@ -23,8 +24,8 @@ db.connect(function(err) {
     }
 });
 
-// 1. MIDDLEWARE: Tells your server how to read incoming JSON data
-app.use(express.json());
+
+
 
 
 
@@ -54,6 +55,39 @@ app.post("/api/lists", function(req, res) {
         
         // 3. Send the success receipt back to the frontend
         res.status(201).json({ message: "List saved permanently to MySQL!" });
+    });
+});
+app.post("/api/signup", function(req, res) {
+    // TRACKER 1: Did the request even arrive?
+    console.log("--- NEW SIGNUP REQUEST RECEIVED ---");
+    
+    // TRACKER 2: Open the delivery truck to see what's inside
+    console.log("Payload inside the truck:", req.body);
+
+    const newuser = req.body; 
+
+    // DEFENSIVE GUARDRAIL: If the truck is empty, stop the crash safely!
+    if (!newuser || !newuser.username || !newuser.password) {
+        console.log("CRASH PREVENTED: The server received empty or missing data!");
+        return res.status(400).json({ error: "The server did not receive the JSON data correctly. Check your body parser!" });
+    }
+
+    const sqlQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
+
+    db.query(sqlQuery, [newuser.username, newuser.password], function(err, result) {
+        if (err) {
+            // TRACKER 3: Explicit database error log
+            console.error("DATABASE ERROR CAUGHT:", err);
+            
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({ error: "Username already exists! Choose another." });
+            }
+            return res.status(500).json({ error: "Failed to save user to database" }); 
+        }
+        
+        // TRACKER 4: Success
+        console.log("SUCCESS: New user officially saved to the vault!");
+        res.status(201).json({ message: "Account successfully created!" });
     });
 });
 
